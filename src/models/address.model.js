@@ -39,4 +39,4 @@ const AddressSchema=mongoose.Schema({
 
 const Address=mongoose.model("addresses",AddressSchema)
 
-module.export=Address;
+module.exports=Address;

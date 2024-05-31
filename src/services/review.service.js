@@ -1,4 +1,4 @@
-const review=require("../models/review")
+const Review=require("../models/review")
 
 const productService=require("../services/product.service")
 

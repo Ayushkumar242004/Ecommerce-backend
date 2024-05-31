@@ -1,4 +1,4 @@
-const orderService=require("../service/orderService")
+const orderService=require("../services/orderService")
 
 const getAllOrders=async(req,res)=>{
     try{

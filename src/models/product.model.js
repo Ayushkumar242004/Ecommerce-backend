@@ -5,13 +5,13 @@ const productSchema= new mongoose.Schema({
         type:String,
 
     },
-    descritpion:{
+    description:{
         type:String,
     },
     price:{
         type:Number,
     },
-    disconutedPrice:{
+    discountedPrice:{
         type:Number,
     },
     discountPersent:{

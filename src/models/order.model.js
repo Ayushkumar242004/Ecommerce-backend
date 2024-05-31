@@ -34,7 +34,7 @@ const orderSchema= new Schema({
             type:String,
         },
         paymentId:{
-            type:STring,
+            type:String,
         },
         paymentStatus:{
             type:String,

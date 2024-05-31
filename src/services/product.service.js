@@ -1,42 +1,63 @@
 const Category=require("../models/category.model")
+const Product = require("../models/product.model");
 
-async function createProduct(reqData)
-{
-    let topLevel=await Category.findOne({name:reqData.topLevelCategory});
+async function createProduct(reqData) {
+    let topLevel = await Category.findOne({ name: reqData.topLavelCategory });
 
-    if(!topLevel){
-        topLevel=new Category({
-            name:reqData.topLevelCategory,
-            level:1
-        })
+    if (!topLevel) {
+        topLevel = new Category({
+            name: reqData.topLavelCategory,
+            level: 1
+        });
+        await topLevel.save();  // Ensure the category is saved
     }
-    let secondLevel=await Category.findOne({
-        name:reqData.secondLevelCategory,
-        parentCategory:topLevel._id,
-        level:2
-    })
 
-    let thirdLevel=await Category.findOne({
-        name:reqData.thirdLevelCategory,
-        parentCategory:secondLevel._id,
-        level:3
-    })
+    let secondLevel = await Category.findOne({
+        name: reqData.secondLavelCategory,
+        parentCategory: topLevel._id,
+        
+    });
 
-    const product=new Product({
-        title:reqData.title,
-        color:reqData.color,
-        description:reqData.description,
-        discountPersent:reqData.discountPersent,
-        imageUrl:reqData.imageUrl,
-        brand:reqData.brand,
-        price:reqData.price,
-        sizes:reqData.size,
-        quantity:reqData.quantity,
-        category:thirdLevel._id,
-    })
+    if (!secondLevel) {
+        secondLevel = new Category({
+            name: reqData.secondLavelCategory,
+            parentCategory: topLevel._id,
+            level: 2
+        });
+        await secondLevel.save();  // Ensure the category is saved
+    }
+
+    let thirdLevel = await Category.findOne({
+        name: reqData.thirdLavelCategory,
+        parentCategory: secondLevel._id,
+        
+    });
+
+    if (!thirdLevel) {
+        thirdLevel = new Category({
+            name: reqData.thirdLavelCategory,
+            parentCategory: secondLevel._id,
+            level: 3
+        });
+        await thirdLevel.save();  // Ensure the category is saved
+    }
+
+    const product = new Product({
+        title: reqData.title,
+        color: reqData.color,
+        description: reqData.description,
+        discountPersent: reqData.discountPersent,
+        imageUrl: reqData.imageUrl,
+        brand: reqData.brand,
+        price: reqData.price,
+        sizes: reqData.size,
+        quantity: reqData.quantity,
+        category: thirdLevel._id,
+    });
 
     return await product.save();
 }
+
 
 async function deleteProduct(productId)
 {
@@ -88,17 +109,17 @@ async function getAllProducts(reqQuery)
         }
 
     if(sizes){
-        const sizeSet=new Set(sizes);
+        const sizesSet=new Set(sizes);
 
-        query.query.where("sizes.name").in([...sizesSet]);
+        query=await query.where("sizes.name").in([...sizesSet]);
     }
 
     if(minPrice&&maxPrice){
-        query=query.where('discountedPrice').gte(minPrice).lte(maxPrice);
+        query=await query.where('discountedPrice').gte(minPrice).lte(maxPrice);
     }
 
     if(minDiscount){
-        query=query.where("discountPersent").gt(minDiscount);
+        query=await query.where("discountPersent").gt(minDiscount);
     }
 
     if(stock)
@@ -120,7 +141,7 @@ async function getAllProducts(reqQuery)
 
         const skip=(pageNumber-1)*pageSize;
 
-        query=auery.skip(skip).limit(pageSize);
+        query=query.skip(skip).limit(pageSize);
 
         const products=await query.exec();
 
@@ -129,7 +150,7 @@ async function getAllProducts(reqQuery)
         return {content:products,currentPage:pageNumber,totalPages,}
 }
 
-async function createMutltipleProducts(products){
+async function createMutltipleProduct(products){
     for(let product of products)
         {
             await createProduct(product);
@@ -142,5 +163,5 @@ module.exports={
     updateProduct,
     findProductById,
     getAllProducts,
-    createMutltipleProducts
+    createMutltipleProduct
 }
