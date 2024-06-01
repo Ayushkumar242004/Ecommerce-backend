@@ -43,47 +43,65 @@ async function findUserCart(userID) {
     }
   }
 
-async function addCartItem(userId,req)
-{
-    try{
-        const cart=await Cart.findOne({user:userId});
-       
-        const product=await Product.findById(req.productId);
-        
-        const isPresent=await CartItem.findOne({cart:cart._id,product:product._id,userId})
-       
-        if(!isPresent)
-            {
-                console.log('Before creating cart item');
-                const cartItem= new CartItem({
-                    product:product._id,
-                    cart:cart._id,
-                    quantity:1,
-                    userId,
-                    price:product.price,
-                    size:req.size,
-                    discountPrice: product.discountPrice
-                   
-                });
+  async function addCartItem(userId, req) {
+    try {
+        // Ensure req has necessary properties
+        if (!req.productId || !req.size) {
+            throw new Error('Invalid request data');
+        }
 
-                console.log('Cart item created:', cartItem);
-                console.log('Before saving cart item');
+        // Find the cart for the user
+        const cart = await Cart.findOne({ user: userId });
+        if (!cart) {
+            throw new Error('Cart not found');
+        }
 
-                const createdCartItem=await cartItem.save();
-                console.log('Cart item saved:', createdCartItem);
-                console.log('Before updating cart');
-                cart.cartItems.push(createdCartItem);
-                await cart.save();
+        // Find the product by ID
+        const product = await Product.findById(req.productId);
+        if (!product) {
+            throw new Error('Product not found');
+        }
 
-                console.log('Cart updated');
+        // Check if the product is already in the cart
+        const isPresent = await CartItem.findOne({
+            cart: cart._id,
+            product: product._id,
+            userId
+        });
 
-                return "Item added to cart"
-            }
-    }
-    catch(error)
-    {
+        // If the item is not present, add it to the cart
+        if (!isPresent) {
+            console.log('Before creating cart item');
+            const cartItem = new CartItem({
+                product: product._id,
+                cart: cart._id,
+                quantity: 1,
+                userId,
+                price: product.price,
+                size: req.size,
+                discountedPrice:product.discountedPrice
+            });
+
+            console.log('Cart item created:', cartItem);
+            console.log('Before saving cart item');
+
+            const createdCartItem = await cartItem.save();
+            console.log('Cart item saved:', createdCartItem);
+            console.log('Before updating cart');
+
+            cart.cartItems.push(createdCartItem);
+            await cart.save();
+
+            console.log('Cart updated');
+
+            return 'Item added to cart';
+        } else {
+            return 'Item already in cart';
+        }
+    } catch (error) {
         throw new Error(error.message);
     }
 }
+
 
 module.exports={createCart,findUserCart,addCartItem};

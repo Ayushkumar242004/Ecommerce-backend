@@ -1,5 +1,5 @@
-const userService=require("./user.service")
-
+const userService=require("../services/user.service")
+const CartItem=require("../models/cartItem.model")
 
 async function updateCartItem(userId,cartItemId,cartItemData){
     try{
@@ -39,7 +39,7 @@ async function removeCartItem(userId,cartItemId)
         {
         return await CartItem.findByIdAndDelete(cartItemId);
         }
-        throw new Error("you can't remove another user's item");
+    throw new Error("you can't remove another user's item");
 }
 async function findCartItemById(cartItemId)
 {
