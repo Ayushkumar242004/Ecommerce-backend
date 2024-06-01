@@ -83,7 +83,7 @@ async function findProductById(id){
 
 async function getAllProducts(reqQuery)
 {
-    let{category,color,sizes,minPrice,maxPrice,minDiscount,sor,stock,pageNumber,pageSize}
+    let{category,color,sizes,minPrice,maxPrice,minDiscount,sort,stock,pageNumber,pageSize}
     =reqQuery;
 
     pageSize=pageSize||10;

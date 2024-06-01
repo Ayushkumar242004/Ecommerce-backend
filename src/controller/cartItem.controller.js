@@ -2,9 +2,11 @@ const cartItemService=require("../services/cartItems.service")
 
 const updateCartItem=async(req,res)=>{
     const user= await req.user
-
+    
     try{
-        const updatedCartItem=await cartItemService.updateCartItem(user._id,req.params,req.body);
+        const updatedCartItem=await cartItemService.updateCartItem(user._id,req.params.id,req.body);
+        console.log(updatedCartItem)
+       
         return res.status(200).send(updatedCartItem);
     }
     catch(error)

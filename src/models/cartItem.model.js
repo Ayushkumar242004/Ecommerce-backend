@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cartItemSchema = new mongoose.Schema({
   cart: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Cart', // Singular form of the model name
+    ref: 'cart', // Singular form of the model name
     required: true,
   },
   product: {
@@ -24,13 +24,10 @@ const cartItemSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  discountedPrice: {
-    type: Number,
-    required: true,
-  },
+  
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    ref: 'users',
     required: true,
   },
 });

@@ -47,10 +47,10 @@ const getAllProducts=async(req,res)=>{
     const productId=req.params.id;
     try{
         const product=await productService.getAllProducts(req.query);
-        return res.status(201).send(products);
+        return res.status(201).send(product);
     }
-    catch{  
-        return res.staatus(500).send({error:error.message});
+    catch(error){  
+        return res.status(500).send({error:error.message});
     }
 }
 
